@@ -1,0 +1,3115 @@
+{
+  "meta": {
+    "nombre": "Grafo de conocimiento — Visita Chiapas con Julio",
+    "version": "1.0.0",
+    "actualizado": "2026-10-28",
+    "fase": "FASE-0 (contexto y grafo) cerrándose; siguiente: FASE-1 identidad visual.",
+    "historial": [
+      {
+        "version": "1.0.0",
+        "fecha": "2026-10-28",
+        "cambio": "Grafo inicial: negocio, flota, destinos, paquetes, tarifas, políticas, marca, decisiones de agosto (DEC-01..20), decisiones nuevas de la entrevista (DEC-21..30), inconsistencias de la entrevista (INC-01..07), pendientes (PEND-01..17), invariantes y fuera de alcance."
+      }
+    ],
+    "proposito": "Fuente de verdad del negocio, las reglas, las decisiones y los pendientes del proyecto, para personas y agentes de IA.",
+    "como_usar_para_agentes": [
+      "Leer primero los nodos tipo 'invariante': son reglas que no se pueden romper.",
+      "Para buscar un nodo usa Grep con su id (p. ej. \"DEC-14\" o \"DST-01\"); no hace falta leer el archivo completo.",
+      "Antes de escribir un texto, un precio o un dato del negocio, buscar el nodo correspondiente (NEG, DST, PAQ, TAR, POL, UNI) y usar ese valor exacto.",
+      "Los nodos con estado 'propuesto', 'pendiente' o 'preliminar' NO son definitivos: preguntar antes de asumir.",
+      "Los nodos 'inconsistencia' marcan datos contradictorios: no elegir una versión por cuenta propia.",
+      "Nada de lo que esté en 'fuera_de_alcance' se implementa sin aprobación.",
+      "Solo el consultor edita este archivo. Claude Code propone cambios en ai/handoff/reporte.md.",
+      "Al cambiar el grafo: agregar o editar nodos y aristas, subir la versión, actualizar 'actualizado', 'historial' y 'estadisticas'."
+    ],
+    "tipos_de_nodo": {
+      "proyecto": "Raíz del grafo",
+      "fase": "Etapa del proyecto",
+      "objetivo": "Lo que el proyecto busca lograr",
+      "restriccion": "Límite del negocio o del proyecto",
+      "actor": "Quién participa (negocio, clientes, equipo de desarrollo)",
+      "dato_negocio": "Hecho confirmado sobre el negocio",
+      "unidad": "Vehículo de la flota (por tamaño)",
+      "servicio": "Tipo de servicio que se vende",
+      "destino": "Destino o tour con sus paradas, duración y hora de salida",
+      "paquete": "Combinación de tours de varios días",
+      "tarifa": "Tabla de precios",
+      "politica": "Regla de negocio de Julio (cobro, cancelación, recogida, inclusiones)",
+      "elemento_marca": "Pieza del sistema de identidad",
+      "modulo": "Área funcional o entregable del proyecto",
+      "tecnologia": "Herramienta o servicio",
+      "decision": "Decisión tomada o propuesta",
+      "inconsistencia": "Dato contradictorio que hay que confirmar con Julio",
+      "pregunta_abierta": "Pendiente de decidir o de preguntar",
+      "invariante": "Regla obligatoria para todo el trabajo (texto, diseño y código)",
+      "fuera_de_alcance": "Excluido del alcance actual"
+    },
+    "estados": {
+      "decidido": "Acordado",
+      "propuesto": "Recomendado, falta confirmación",
+      "pendiente": "Sin decidir o sin dato",
+      "preliminar": "Dato de Julio con dudas de interpretación",
+      "resuelto": "Pregunta o inconsistencia ya contestada",
+      "descartado": "No se usará",
+      "fuera_de_alcance": "Excluido del alcance actual",
+      "obligatorio": "Regla dura"
+    },
+    "tipos_de_relacion": {
+      "persigue": "proyecto → objetivo",
+      "limitado_por": "proyecto → restricción",
+      "contiene": "proyecto → fase/módulo",
+      "ofrece": "proyecto → servicio",
+      "opera_con": "proyecto → unidad",
+      "describe": "proyecto → dato de negocio",
+      "entrega": "fase → módulo",
+      "responsable": "fase → actor",
+      "sigue_a": "fase → fase anterior",
+      "implementada_por": "fase → actor",
+      "incluye": "servicio/paquete → destino/paquete",
+      "extiende": "paquete → paquete base",
+      "tarifa_de": "tarifa → paquete/servicio",
+      "usa_unidad": "tarifa → unidad",
+      "bloqueada_por": "nodo → pregunta/inconsistencia que lo bloquea",
+      "bloqueado_por": "nodo → pregunta que lo bloquea",
+      "referencia": "dato → nodo (nota = motivo)",
+      "complementa": "dato → paquete",
+      "afinado_por": "nodo → pregunta que lo precisará",
+      "regido_por": "servicio → política",
+      "regida_por": "tarifa → política",
+      "atendido_segun": "actor → política",
+      "deriva_de": "regla/elemento → origen",
+      "excluye": "decisión/política → fuera de alcance",
+      "afectada_por": "política → inconsistencia",
+      "atiende_en": "actor → dato",
+      "opera": "actor → unidad",
+      "asigna_en": "actor → módulo",
+      "reporta_en": "actor → módulo",
+      "administra": "actor → decisión",
+      "compone": "elemento → logo",
+      "variante_de": "elemento → elemento",
+      "parte_de": "elemento → módulo",
+      "definido_por": "elemento → decisión",
+      "usa": "decisión/elemento/módulo → tecnología",
+      "origen": "elemento → tecnología donde se creó",
+      "cumple": "decisión/elemento → objetivo",
+      "aplica_a": "decisión → módulo",
+      "motivada_por": "decisión → restricción/dato/política",
+      "depende_de": "decisión → decisión",
+      "descartada_en": "tecnología descartada → decisión",
+      "afinada_por": "decisión → pregunta",
+      "respeta": "decisión → invariante",
+      "habilita": "decisión → decisión",
+      "muestra": "decisión → política que se publica",
+      "afina": "decisión/pregunta → nodo que precisa",
+      "resuelve": "decisión → inconsistencia",
+      "afecta": "inconsistencia → nodo",
+      "resuelta_por": "inconsistencia → pregunta",
+      "bloquea": "pregunta → fase",
+      "excluido_por": "fuera de alcance → restricción/actor"
+    },
+    "estadisticas": {
+      "nodos": 180,
+      "aristas": 296,
+      "por_tipo": {
+        "proyecto": 1,
+        "fase": 5,
+        "objetivo": 6,
+        "restriccion": 7,
+        "actor": 7,
+        "dato_negocio": 15,
+        "unidad": 4,
+        "servicio": 4,
+        "destino": 9,
+        "paquete": 2,
+        "tarifa": 3,
+        "politica": 10,
+        "elemento_marca": 10,
+        "modulo": 7,
+        "tecnologia": 13,
+        "decision": 30,
+        "inconsistencia": 7,
+        "pregunta_abierta": 17,
+        "invariante": 15,
+        "fuera_de_alcance": 8
+      }
+    }
+  },
+  "nodos": [
+    {
+      "id": "PRY-01",
+      "tipo": "proyecto",
+      "nombre": "Visita Chiapas con Julio",
+      "descripcion": "Identidad visual, sitio web y (en una fase posterior) sistema de reservas para un negocio de transporte terrestre privado con operador, con base en San Cristóbal de las Casas. Meta: más tráfico y más confianza, sobre todo de quien ya tuvo contacto con Julio.",
+      "estado": "decidido",
+      "detalles": {
+        "titular": "Julio César Hernández Mijangos",
+        "base": "San Cristóbal de las Casas, Chiapas (lada 967)",
+        "responsable_del_proyecto": "Desarrollador a cargo (administra dominio y contenido, coordina con Julio)",
+        "documentos": {
+          "estado": "ai/context/estado-actual.md",
+          "grafo": "ai/context/knowledge-graph.json",
+          "skill": "ai/context/skill/SKILL.md",
+          "handoff": "ai/handoff/README.md",
+          "estado_historico": "docs/estado del proyecto.md (27-ago-2026, desactualizado en flota y modelo de cobro; ver INC-05)",
+          "identidad": "logo/identidad-visual/"
+        }
+      }
+    },
+    {
+      "id": "FASE-0",
+      "tipo": "fase",
+      "nombre": "Contexto y grafo de conocimiento",
+      "descripcion": "Levantar el contexto del negocio en un grafo, estado actual, skill y carpeta de handoff para trabajar con Claude Code.",
+      "estado": "decidido",
+      "detalles": {
+        "estatus": "en curso (2026-10-28)"
+      }
+    },
+    {
+      "id": "FASE-1",
+      "tipo": "fase",
+      "nombre": "Identidad visual",
+      "descripcion": "Cerrar el sistema de identidad: logo limpio y variantes, paleta extendida, tipografía web, dirección fotográfica, tono de voz y aplicaciones (vinil de unidades, avatar de WhatsApp/redes, tarjeta).",
+      "estado": "decidido",
+      "detalles": {
+        "estatus": "siguiente"
+      }
+    },
+    {
+      "id": "FASE-2",
+      "tipo": "fase",
+      "nombre": "Sitio web de una página (MVP)",
+      "descripcion": "Sitio en español, sin backend; contacto por WhatsApp con mensaje prellenado.",
+      "estado": "decidido",
+      "detalles": {
+        "estatus": "bloqueada por datos de Julio (ver preguntas abiertas)"
+      }
+    },
+    {
+      "id": "FASE-3",
+      "tipo": "fase",
+      "nombre": "Perfil de Empresa en Google",
+      "descripcion": "Ficha como negocio de área de servicio, verificación por video y reseñas. Corre en paralelo; la hace Julio acompañado por el responsable.",
+      "estado": "decidido",
+      "detalles": {
+        "estatus": "Julio dice que 'recién se registró'; falta verificar en qué paso va"
+      }
+    },
+    {
+      "id": "FASE-4",
+      "tipo": "fase",
+      "nombre": "Sistema de reservas",
+      "descripcion": "Solicitudes, calendario por unidad, estados y pagos en efectivo. Solo si el volumen lo justifica.",
+      "estado": "propuesto",
+      "detalles": {
+        "estatus": "no iniciada"
+      }
+    },
+    {
+      "id": "OBJ-GEN",
+      "tipo": "objetivo",
+      "nombre": "Objetivo general",
+      "descripcion": "Aumentar las solicitudes y la confianza en el negocio mediante una identidad visual consistente, un sitio web y, después, un sistema de reservas.",
+      "estado": "decidido"
+    },
+    {
+      "id": "OBJ-01",
+      "tipo": "objetivo",
+      "nombre": "Dar formalidad y confianza a quien ya contactó a Julio",
+      "descripcion": "Prioridad declarada por Julio: que la persona que ya habló con él vea un negocio formal, seguro y conocido, y se anime a dejar el anticipo.",
+      "estado": "decidido"
+    },
+    {
+      "id": "OBJ-02",
+      "tipo": "objetivo",
+      "nombre": "Convertir visitas en conversaciones de WhatsApp",
+      "descripcion": "El canal de cierre es WhatsApp/llamada; el sitio lleva ahí con el mensaje ya redactado.",
+      "estado": "decidido"
+    },
+    {
+      "id": "OBJ-03",
+      "tipo": "objetivo",
+      "nombre": "Atraer clientes nuevos fuera de la recomendación",
+      "descripcion": "Hoy casi todo llega por recomendación. El Perfil de Empresa en Google y el sitio abren un segundo canal.",
+      "estado": "decidido"
+    },
+    {
+      "id": "OBJ-04",
+      "tipo": "objetivo",
+      "nombre": "No comprometer la misma unidad dos veces",
+      "descripcion": "Meta del sistema de reservas: calendario por unidad.",
+      "estado": "propuesto"
+    },
+    {
+      "id": "OBJ-05",
+      "tipo": "objetivo",
+      "nombre": "Identidad coherente en todos los puntos de contacto",
+      "descripcion": "La misma marca en sitio, unidades, redes, WhatsApp y Google.",
+      "estado": "decidido"
+    },
+    {
+      "id": "RES-01",
+      "tipo": "restriccion",
+      "nombre": "Volumen bajo de solicitudes",
+      "descripcion": "Aprox. 2 solicitudes por semana; 7 de cada 8 se cierran. No justifica sistemas complejos de inicio.",
+      "estado": "decidido"
+    },
+    {
+      "id": "RES-02",
+      "tipo": "restriccion",
+      "nombre": "Julio no edita el sitio",
+      "descripcion": "Julio manda los cambios por mensaje y el responsable los publica. Julio dice que 'se adapta a los tiempos' del responsable.",
+      "estado": "decidido"
+    },
+    {
+      "id": "RES-03",
+      "tipo": "restriccion",
+      "nombre": "Sin reseñas escritas",
+      "descripcion": "No hay reseñas públicas en ningún lado todavía.",
+      "estado": "decidido"
+    },
+    {
+      "id": "RES-04",
+      "tipo": "restriccion",
+      "nombre": "Material fotográfico limitado",
+      "descripcion": "Hay algunas fotos, solo 2–3 con personas; faltan variedad, foto de Julio, unidades por fuera y por dentro, y paisaje horizontal. Videos en celular aún no compartidos.",
+      "estado": "decidido"
+    },
+    {
+      "id": "RES-05",
+      "tipo": "restriccion",
+      "nombre": "Equipo solo habla español",
+      "descripcion": "Julio y sus operadores no hablan inglés; contrata traductor cuando hace falta.",
+      "estado": "decidido"
+    },
+    {
+      "id": "RES-06",
+      "tipo": "restriccion",
+      "nombre": "Desarrollo con Claude Code mediante handoff",
+      "descripcion": "La implementación la hace Claude Code; el consultor (Claude en la conversación del proyecto) asigna tareas y revisa reportes en ai/handoff/.",
+      "estado": "decidido"
+    },
+    {
+      "id": "RES-07",
+      "tipo": "restriccion",
+      "nombre": "Situación fiscal informal",
+      "descripcion": "RFC inactivo; casi no factura (solo a veces traslados al aeropuerto).",
+      "estado": "decidido"
+    },
+    {
+      "id": "ACT-JULIO",
+      "tipo": "actor",
+      "nombre": "Julio (dueño)",
+      "descripcion": "Julio César Hernández Mijangos. Dueño, cara del negocio, también opera. Contesta de 8:00 a 20:00 (después de las 23:00 ya no).",
+      "estado": "decidido"
+    },
+    {
+      "id": "ACT-OPER",
+      "tipo": "actor",
+      "nombre": "Operadores",
+      "descripcion": "4 operadores en total (se dice 'operador', nunca 'chofer').",
+      "estado": "decidido"
+    },
+    {
+      "id": "ACT-CLIENTE",
+      "tipo": "actor",
+      "nombre": "Cliente / turista",
+      "descripcion": "En su mayoría nacionales; familias y parejas. Llegan por recomendación. Reservan con 6 meses de anticipación o de un día para otro. No son viajes escolares.",
+      "estado": "decidido"
+    },
+    {
+      "id": "ACT-EXT",
+      "tipo": "actor",
+      "nombre": "Cliente extranjero",
+      "descripcion": "Minoría. Se atiende con traductor contratado.",
+      "estado": "decidido"
+    },
+    {
+      "id": "ACT-RESP",
+      "tipo": "actor",
+      "nombre": "Responsable del proyecto",
+      "descripcion": "Desarrollador a cargo: levanta requerimientos con Julio, administra dominio y contenido, aprueba fases.",
+      "estado": "decidido"
+    },
+    {
+      "id": "ACT-CONSULTOR",
+      "tipo": "actor",
+      "nombre": "Consultor (Claude)",
+      "descripcion": "Conoce el contexto; mantiene el grafo y el estado, asigna tareas en ai/handoff/siguiente.md y aprueba o rechaza reportes.",
+      "estado": "decidido"
+    },
+    {
+      "id": "ACT-CC",
+      "tipo": "actor",
+      "nombre": "Claude Code",
+      "descripcion": "Implementa las tareas del handoff y escribe ai/handoff/reporte.md. No cambia decisiones del grafo por su cuenta.",
+      "estado": "decidido"
+    },
+    {
+      "id": "NEG-01",
+      "tipo": "dato_negocio",
+      "nombre": "Nombre comercial",
+      "descripcion": "«Visita Chiapas con Julio», definitivo.",
+      "estado": "decidido"
+    },
+    {
+      "id": "NEG-02",
+      "tipo": "dato_negocio",
+      "nombre": "Giro",
+      "descripcion": "Transporte terrestre privado con operador. Se renta la unidad completa; nunca se comparte con desconocidos.",
+      "estado": "decidido"
+    },
+    {
+      "id": "NEG-03",
+      "tipo": "dato_negocio",
+      "nombre": "Experiencia",
+      "descripcion": "16 años operando.",
+      "estado": "decidido"
+    },
+    {
+      "id": "NEG-04",
+      "tipo": "dato_negocio",
+      "nombre": "Diferenciador",
+      "descripcion": "Según Julio: «vende experiencias únicas, diferentes; una agencia vende rutinas». Se apoya en itinerarios flexibles y trato directo.",
+      "estado": "decidido"
+    },
+    {
+      "id": "NEG-05",
+      "tipo": "dato_negocio",
+      "nombre": "Lo que valoran los clientes",
+      "descripcion": "El servicio, la atención, la experiencia, la confianza y la seguridad.",
+      "estado": "decidido"
+    },
+    {
+      "id": "NEG-06",
+      "tipo": "dato_negocio",
+      "nombre": "Canales de contacto",
+      "descripcion": "WhatsApp y llamada; casi nada por Facebook. La mayoría llega por recomendación.",
+      "estado": "decidido",
+      "detalles": {
+        "whatsapp_publico": "967 122 7321 (de su Facebook; falta confirmación, PEND-03)",
+        "correo_publico": "juliomijangos29@hotmail.com (ligado a sus redes; no se toca)"
+      }
+    },
+    {
+      "id": "NEG-07",
+      "tipo": "dato_negocio",
+      "nombre": "Horario de atención",
+      "descripcion": "8:00 a 20:00. Después de las 23:00 ya no contesta.",
+      "estado": "decidido"
+    },
+    {
+      "id": "NEG-08",
+      "tipo": "dato_negocio",
+      "nombre": "Operación anual",
+      "descripcion": "Opera todo el año, sin temporadas de cierre.",
+      "estado": "decidido"
+    },
+    {
+      "id": "NEG-09",
+      "tipo": "dato_negocio",
+      "nombre": "Conversión",
+      "descripcion": "De 8 solicitudes, 7 se cierran. La que no, suele ser por presupuesto.",
+      "estado": "decidido"
+    },
+    {
+      "id": "NEG-10",
+      "tipo": "dato_negocio",
+      "nombre": "Agenda actual",
+      "descripcion": "En el celular y por WhatsApp.",
+      "estado": "decidido"
+    },
+    {
+      "id": "NEG-11",
+      "tipo": "dato_negocio",
+      "nombre": "Rentabilidad",
+      "descripcion": "Más vendido: Cañón del Sumidero. Más ganancia: Palenque. A más días y más clientes (grupo grande en una unidad), más ganancia.",
+      "estado": "decidido"
+    },
+    {
+      "id": "NEG-12",
+      "tipo": "dato_negocio",
+      "nombre": "Credenciales declaradas",
+      "descripcion": "Guía de turistas, seguro de viajero, posible pertenencia al colegio de guías, SECTUR. Sin constancias revisadas todavía.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "NEG-13",
+      "tipo": "dato_negocio",
+      "nombre": "Presencia digital",
+      "descripcion": "Facebook (~362 seguidores; la portada dice «Descubre Chiapas con Julio» y hay que corregirla), Instagram y WhatsApp ya usan el nombre correcto. Sin sitio web ni dominio.",
+      "estado": "decidido"
+    },
+    {
+      "id": "NEG-14",
+      "tipo": "dato_negocio",
+      "nombre": "Venta de hospedaje",
+      "descripcion": "También vende/gestiona hospedaje de forma opcional según la necesidad del cliente.",
+      "estado": "decidido"
+    },
+    {
+      "id": "NEG-15",
+      "tipo": "dato_negocio",
+      "nombre": "Facturación",
+      "descripcion": "RFC inactivo; casi no factura, salvo algunos traslados al aeropuerto.",
+      "estado": "decidido"
+    },
+    {
+      "id": "UNI-01",
+      "tipo": "unidad",
+      "nombre": "Coche (2–4 pasajeros)",
+      "descripcion": "Mínimo 2, máximo 4.",
+      "estado": "decidido"
+    },
+    {
+      "id": "UNI-02",
+      "tipo": "unidad",
+      "nombre": "Van chica (4–7 pasajeros)",
+      "descripcion": "Mínimo 4, máximo 7.",
+      "estado": "decidido"
+    },
+    {
+      "id": "UNI-03",
+      "tipo": "unidad",
+      "nombre": "Van mediana (8–11 pasajeros)",
+      "descripcion": "Mínimo 8, máximo 11 según capacidad declarada; la tabla de precios usa 14 como máximo (INC-02).",
+      "estado": "pendiente"
+    },
+    {
+      "id": "UNI-04",
+      "tipo": "unidad",
+      "nombre": "Van grande (12–20 pasajeros)",
+      "descripcion": "Mínimo 12, máximo 20.",
+      "estado": "decidido"
+    },
+    {
+      "id": "SRV-TOUR",
+      "tipo": "servicio",
+      "nombre": "Tour",
+      "descripcion": "Recorrido de un día (o dos en Palenque) con paradas. Recoge y deja en el hospedaje.",
+      "estado": "decidido"
+    },
+    {
+      "id": "SRV-TRASLADO",
+      "tipo": "servicio",
+      "nombre": "Traslado",
+      "descripcion": "Viaje de punto a punto, p. ej. aeropuerto de Tuxtla ↔ San Cristóbal (y viceversa).",
+      "estado": "decidido"
+    },
+    {
+      "id": "SRV-PAQUETE",
+      "tipo": "servicio",
+      "nombre": "Paquete de varios días",
+      "descripcion": "Combinación de tours en días consecutivos (Paquete Básico, Chiapas Total).",
+      "estado": "decidido"
+    },
+    {
+      "id": "SRV-MEDIDA",
+      "tipo": "servicio",
+      "nombre": "Viaje a la medida",
+      "descripcion": "Itinerario armado según el cliente. Precio sin base definida («desde»).",
+      "estado": "decidido"
+    },
+    {
+      "id": "DST-01",
+      "tipo": "destino",
+      "nombre": "Cañón del Sumidero",
+      "descripcion": "Miradores del cañón, recorrido en lancha y pueblo mágico de Chiapa de Corzo. El más buscado y más vendido.",
+      "estado": "decidido",
+      "detalles": {
+        "duracion": "~6 h",
+        "salida": "9:00",
+        "paradas": [
+          "Miradores del Cañón del Sumidero",
+          "Recorrido en lancha",
+          "Chiapa de Corzo"
+        ]
+      }
+    },
+    {
+      "id": "DST-02",
+      "tipo": "destino",
+      "nombre": "Palenque, Agua Azul y Misol-Ha",
+      "descripcion": "Cascadas de Agua Azul y Misol-Ha y zona arqueológica de Palenque. Mínimo 2 días; una noche en Palenque. El que más ganancia deja.",
+      "estado": "decidido",
+      "detalles": {
+        "duracion": "2 días (San Cristóbal–Palenque ~5 h de camino; Julio también dijo ~11 h; ver INC-06)",
+        "salida": "5:00",
+        "paradas": [
+          "Cascada de Agua Azul",
+          "Cascada de Misol-Ha",
+          "Zona arqueológica de Palenque"
+        ],
+        "pernocta": "1 noche en Palenque"
+      }
+    },
+    {
+      "id": "DST-03",
+      "tipo": "destino",
+      "nombre": "Lagos de Montebello",
+      "descripcion": "Cascada El Chiflón (Velo de Novia), Lagos de Montebello, un lago en la frontera con Guatemala y una comunidad pequeña fronteriza.",
+      "estado": "decidido",
+      "detalles": {
+        "duracion": "~14 h",
+        "salida": "7:00"
+      }
+    },
+    {
+      "id": "DST-04",
+      "tipo": "destino",
+      "nombre": "San Juan Chamula y Zinacantán",
+      "descripcion": "Pueblos tsotsiles.",
+      "estado": "decidido",
+      "detalles": {
+        "duracion": "~4 h",
+        "salida": "10:00"
+      }
+    },
+    {
+      "id": "DST-05",
+      "tipo": "destino",
+      "nombre": "Arcotete y Grutas de Rancho Nuevo",
+      "descripcion": "Parque El Arcotete y grutas de Rancho Nuevo.",
+      "estado": "decidido",
+      "detalles": {
+        "duracion": "~4 h",
+        "salida": "10:00"
+      }
+    },
+    {
+      "id": "DST-06",
+      "tipo": "destino",
+      "nombre": "Cascada Las Nubes",
+      "descripcion": "Solo en Chiapas Total.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DST-07",
+      "tipo": "destino",
+      "nombre": "Centro ecoturístico Las Guacamayas",
+      "descripcion": "Solo en Chiapas Total. Se duerme en cabañas.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DST-08",
+      "tipo": "destino",
+      "nombre": "Yaxchilán y Bonampak",
+      "descripcion": "Zonas arqueológicas. Solo en Chiapas Total.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DST-09",
+      "tipo": "destino",
+      "nombre": "Traslado aeropuerto de Tuxtla",
+      "descripcion": "Aeropuerto de Tuxtla ↔ San Cristóbal. Horario según vuelo.",
+      "estado": "decidido"
+    },
+    {
+      "id": "PAQ-01",
+      "tipo": "paquete",
+      "nombre": "Paquete Básico",
+      "descripcion": "Los 5 tours base (Sumidero, Palenque, Montebello, Pueblos, Grutas). Todas las noches en San Cristóbal salvo una en Palenque. El penúltimo día es libre en San Cristóbal; el último día se continúa con el tour. Incluye entradas y transporte.",
+      "estado": "decidido",
+      "detalles": {
+        "dias": "sin confirmar (PEND-01)"
+      }
+    },
+    {
+      "id": "PAQ-02",
+      "tipo": "paquete",
+      "nombre": "Paquete Chiapas Total",
+      "descripcion": "Lo del Paquete Básico más Cascada Las Nubes, Las Guacamayas y Yaxchilán/Bonampak («dos días más»). Se duerme en cabañas en esa parte. Incluye entradas y transporte; no incluye hospedaje.",
+      "estado": "decidido",
+      "detalles": {
+        "dias": "sin confirmar (PEND-01)"
+      }
+    },
+    {
+      "id": "TAR-01",
+      "tipo": "tarifa",
+      "nombre": "Tarifas Paquete Básico",
+      "descripcion": "Precio total del paquete (entradas + transporte) según unidad y número de personas, en MXN. Interpretación: cada unidad tiene precio para su mínimo y su máximo de pasajeros (INC-03). Precios negociables según el cliente.",
+      "estado": "preliminar",
+      "detalles": {
+        "moneda": "MXN",
+        "filas": [
+          {
+            "unidad": "UNI-01",
+            "personas": 2,
+            "mxn": 18000
+          },
+          {
+            "unidad": "UNI-01",
+            "personas": 4,
+            "mxn": 22000
+          },
+          {
+            "unidad": "UNI-02",
+            "personas": 4,
+            "mxn": 24000
+          },
+          {
+            "unidad": "UNI-02",
+            "personas": 7,
+            "mxn": 30000
+          },
+          {
+            "unidad": "UNI-03",
+            "personas": 8,
+            "mxn": 32000
+          },
+          {
+            "unidad": "UNI-03",
+            "personas": 14,
+            "mxn": 42000
+          },
+          {
+            "unidad": "UNI-04",
+            "personas": 12,
+            "mxn": 54000
+          },
+          {
+            "unidad": "UNI-04",
+            "personas": 20,
+            "mxn": 68000
+          }
+        ]
+      }
+    },
+    {
+      "id": "TAR-02",
+      "tipo": "tarifa",
+      "nombre": "Tarifas Paquete Chiapas Total",
+      "descripcion": "Precio total (entradas + dos días más + transporte), sin hospedaje, en MXN. Misma interpretación que TAR-01.",
+      "estado": "preliminar",
+      "detalles": {
+        "moneda": "MXN",
+        "filas": [
+          {
+            "unidad": "UNI-01",
+            "personas": 2,
+            "mxn": 22000
+          },
+          {
+            "unidad": "UNI-01",
+            "personas": 4,
+            "mxn": 26000
+          },
+          {
+            "unidad": "UNI-02",
+            "personas": 4,
+            "mxn": 30000
+          },
+          {
+            "unidad": "UNI-02",
+            "personas": 7,
+            "mxn": 38000
+          },
+          {
+            "unidad": "UNI-03",
+            "personas": 8,
+            "mxn": 44000
+          },
+          {
+            "unidad": "UNI-03",
+            "personas": 14,
+            "mxn": 56000
+          },
+          {
+            "unidad": "UNI-04",
+            "personas": 12,
+            "mxn": 70000
+          },
+          {
+            "unidad": "UNI-04",
+            "personas": 20,
+            "mxn": 88000
+          }
+        ]
+      }
+    },
+    {
+      "id": "TAR-03",
+      "tipo": "tarifa",
+      "nombre": "Tarifas de tours sueltos y traslados",
+      "descripcion": "Julio dice que «va dependiendo de los lugares y del tour». No hay precio base por tour individual ni por traslado.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "POL-01",
+      "tipo": "politica",
+      "nombre": "Unidad privada completa",
+      "descripcion": "Se renta la unidad completa con operador a una familia o grupo de conocidos. No hay tours colectivos mezclados.",
+      "estado": "obligatorio"
+    },
+    {
+      "id": "POL-02",
+      "tipo": "politica",
+      "nombre": "Recogida y regreso al hospedaje",
+      "descripcion": "No hay punto de encuentro: el operador recoge al cliente en su hotel/Airbnb y lo regresa ahí.",
+      "estado": "decidido"
+    },
+    {
+      "id": "POL-03",
+      "tipo": "politica",
+      "nombre": "Qué incluye",
+      "descripcion": "Transporte y entradas. Hospedaje opcional, según la necesidad del cliente.",
+      "estado": "decidido"
+    },
+    {
+      "id": "POL-04",
+      "tipo": "politica",
+      "nombre": "Qué no incluye",
+      "descripcion": "Guías locales en zonas arqueológicas, actividades (tirolesa, balsa tipo maya, etc.), alimentos y propina.",
+      "estado": "decidido"
+    },
+    {
+      "id": "POL-05",
+      "tipo": "politica",
+      "nombre": "Apartado",
+      "descripcion": "Anticipo del 50% o de palabra. Si el cliente desconfía de transferir, acepta pago en efectivo en persona.",
+      "estado": "decidido"
+    },
+    {
+      "id": "POL-06",
+      "tipo": "politica",
+      "nombre": "Cancelación empática",
+      "descripcion": "En caso de fallecimiento o enfermedad, devuelve íntegro el anticipo. La idea es que el cliente sepa que trata con una empresa empática.",
+      "estado": "decidido"
+    },
+    {
+      "id": "POL-07",
+      "tipo": "politica",
+      "nombre": "Itinerario flexible",
+      "descripcion": "La duración se ajusta al interés del cliente (puede quedarse más o moverse antes). Se recomienda salir temprano para disfrutar más.",
+      "estado": "decidido"
+    },
+    {
+      "id": "POL-08",
+      "tipo": "politica",
+      "nombre": "Precio ajustable",
+      "descripcion": "No hay precios de temporada: ajusta (baja) el precio todo el año según las necesidades del cliente.",
+      "estado": "decidido"
+    },
+    {
+      "id": "POL-09",
+      "tipo": "politica",
+      "nombre": "Sin cupo mínimo de clientes",
+      "descripcion": "Puede llevar a una sola persona con el paquete completo; los mínimos por unidad definen el precio, no si se hace el viaje (ver INC-04).",
+      "estado": "preliminar"
+    },
+    {
+      "id": "POL-10",
+      "tipo": "politica",
+      "nombre": "Traductor bajo demanda",
+      "descripcion": "Para clientes extranjeros se contrata un traductor.",
+      "estado": "decidido"
+    },
+    {
+      "id": "MRC-LOGO",
+      "tipo": "elemento_marca",
+      "nombre": "Logotipo completo",
+      "descripcion": "Cordillera de trazo continuo + ruta punteada + «Visita Chiapas / con Julio». Base de la propuesta 1.",
+      "estado": "decidido",
+      "detalles": {
+        "archivos": [
+          "logo/Visita Chiapas con Julio.png (raster de Canva, 2000×2000)",
+          "logo/identidad-visual/referencias/logov1.svg (vector calcado)"
+        ]
+      }
+    },
+    {
+      "id": "MRC-SIMBOLO",
+      "tipo": "elemento_marca",
+      "nombre": "Símbolo (cordillera)",
+      "descripcion": "Montaña de trazo continuo en azul tinta.",
+      "estado": "decidido",
+      "detalles": {
+        "archivos": [
+          "logo/identidad-visual/referencias/simbolo.svg"
+        ]
+      }
+    },
+    {
+      "id": "MRC-RUTA",
+      "tipo": "elemento_marca",
+      "nombre": "Ruta punteada",
+      "descripcion": "Camino punteado en terracota; único elemento cálido y guía visual del recorrido.",
+      "estado": "decidido",
+      "detalles": {
+        "archivos": [
+          "logo/identidad-visual/referencias/punteada.svg"
+        ]
+      }
+    },
+    {
+      "id": "MRC-MONO",
+      "tipo": "elemento_marca",
+      "nombre": "Versión monocromática",
+      "descripcion": "Variante obligatoria para sellos, vinil de una tinta y blanco y negro. No es alternativa a elegir.",
+      "estado": "decidido"
+    },
+    {
+      "id": "MRC-FAVICON",
+      "tipo": "elemento_marca",
+      "nombre": "Favicon",
+      "descripcion": "Solo la montaña, sin ruta ni texto (a 16 px lo demás desaparece).",
+      "estado": "decidido"
+    },
+    {
+      "id": "MRC-PALETA",
+      "tipo": "elemento_marca",
+      "nombre": "Paleta base",
+      "descripcion": "Azul tinta, crema y terracota.",
+      "estado": "decidido",
+      "detalles": {
+        "colores": {
+          "azul_tinta": "#334351",
+          "crema": "#FBF3E6",
+          "terracota": "#BE6A47"
+        },
+        "contraste": {
+          "azul_sobre_crema": "9.24:1",
+          "terracota_sobre_crema": "3.57:1 (no apta para texto normal)",
+          "blanco_sobre_terracota": "3.93:1"
+        },
+        "propuesta_terracota_texto": {
+          "hex": "#A65A3B",
+          "sobre_crema": "4.6:1",
+          "blanco_encima": "5.06:1",
+          "estado": "propuesto (DEC-27)"
+        }
+      }
+    },
+    {
+      "id": "MRC-TIPO",
+      "tipo": "elemento_marca",
+      "nombre": "Tipografía",
+      "descripcion": "Garet en el logotipo (texto trazado a contornos, no requiere licencia web). Para el sitio: alternativa gratuita por decidir (Poppins, Outfit o Jost).",
+      "estado": "pendiente"
+    },
+    {
+      "id": "MRC-FOTO",
+      "tipo": "elemento_marca",
+      "nombre": "Dirección fotográfica",
+      "descripcion": "Fotos reales de Julio, sus unidades y clientes disfrutando; horizontales, buena luz, gente y no solo paisaje vacío.",
+      "estado": "propuesto"
+    },
+    {
+      "id": "MRC-VOZ",
+      "tipo": "elemento_marca",
+      "nombre": "Tono de voz",
+      "descripcion": "Cálido, formal sin ser corporativo, cercano, local. En primera persona de Julio o de «nosotros» (por definir). Vocabulario: operador, unidad, recorrido.",
+      "estado": "propuesto"
+    },
+    {
+      "id": "MRC-PERS",
+      "tipo": "elemento_marca",
+      "nombre": "Personalidad visual",
+      "descripcion": "Es: confiable, cálido, formal sin ser corporativo, cercano, local. No es: lujo frío, aventura extrema, turismo masivo, agencia genérica de tours.",
+      "estado": "decidido"
+    },
+    {
+      "id": "MOD-IDENTIDAD",
+      "tipo": "modulo",
+      "nombre": "Sistema de identidad",
+      "descripcion": "Logo y variantes, tokens, tipografía, fotografía, voz, aplicaciones.",
+      "estado": "decidido"
+    },
+    {
+      "id": "MOD-SITIO",
+      "tipo": "modulo",
+      "nombre": "Sitio web de una página",
+      "descripcion": "Landing en español con destinos, paquetes, flota, cómo reservar, políticas y contacto por WhatsApp.",
+      "estado": "decidido"
+    },
+    {
+      "id": "MOD-DATOS",
+      "tipo": "modulo",
+      "nombre": "Archivo único de contenido",
+      "descripcion": "Destinos, paquetes, tarifas y unidades en un solo archivo de datos del que leen las vistas.",
+      "estado": "decidido"
+    },
+    {
+      "id": "MOD-RESERVAS",
+      "tipo": "modulo",
+      "nombre": "Sistema de reservas",
+      "descripcion": "Solicitudes, calendario por unidad, estados, pagos en efectivo; móvil primero.",
+      "estado": "propuesto"
+    },
+    {
+      "id": "MOD-PANEL",
+      "tipo": "modulo",
+      "nombre": "Panel de Julio",
+      "descripcion": "Acceso con Google solo para Julio/responsable para gestionar reservas.",
+      "estado": "propuesto"
+    },
+    {
+      "id": "MOD-GBP",
+      "tipo": "modulo",
+      "nombre": "Presencia en Google",
+      "descripcion": "Perfil de Empresa en Google y reseñas.",
+      "estado": "decidido"
+    },
+    {
+      "id": "MOD-HANDOFF",
+      "tipo": "modulo",
+      "nombre": "Handoff con Claude Code",
+      "descripcion": "ai/handoff: siguiente.md, reporte.md, revisiones-pendientes.md y README.md.",
+      "estado": "decidido"
+    },
+    {
+      "id": "TEC-NEXT",
+      "tipo": "tecnologia",
+      "nombre": "Next.js (App Router)",
+      "descripcion": "Framework del sitio y, después, de las reservas (Route Handlers).",
+      "estado": "decidido"
+    },
+    {
+      "id": "TEC-VERCEL",
+      "tipo": "tecnologia",
+      "nombre": "Vercel",
+      "descripcion": "Hosting.",
+      "estado": "decidido"
+    },
+    {
+      "id": "TEC-SUPABASE",
+      "tipo": "tecnologia",
+      "nombre": "Supabase (Postgres)",
+      "descripcion": "Base de datos del sistema de reservas (fase 4).",
+      "estado": "decidido"
+    },
+    {
+      "id": "TEC-GOAUTH",
+      "tipo": "tecnologia",
+      "nombre": "Google OAuth",
+      "descripcion": "Solo para el panel de Julio; nunca para el turista.",
+      "estado": "decidido"
+    },
+    {
+      "id": "TEC-MP",
+      "tipo": "tecnologia",
+      "nombre": "Mercado Pago",
+      "descripcion": "Pagos a futuro, no en el MVP.",
+      "estado": "propuesto"
+    },
+    {
+      "id": "TEC-NEST",
+      "tipo": "tecnologia",
+      "nombre": "NestJS",
+      "descripcion": "Descartado: con Supabase sobra y encaja mal en serverless.",
+      "estado": "descartado"
+    },
+    {
+      "id": "TEC-WAME",
+      "tipo": "tecnologia",
+      "nombre": "Enlaces wa.me",
+      "descripcion": "El formulario arma un enlace de WhatsApp con el mensaje redactado.",
+      "estado": "decidido"
+    },
+    {
+      "id": "TEC-GBP",
+      "tipo": "tecnologia",
+      "nombre": "Perfil de Empresa en Google",
+      "descripcion": "business.google.com; verificación por video.",
+      "estado": "decidido"
+    },
+    {
+      "id": "TEC-CANVA",
+      "tipo": "tecnologia",
+      "nombre": "Canva",
+      "descripcion": "Donde se hicieron las propuestas de logo (raster).",
+      "estado": "decidido",
+      "detalles": {
+        "enlaces_editar_compartir": {
+          "tres_propuestas_y_avatares": [
+            "jEH0Ot4CAaHhbit",
+            "qDYvmcx9KbZL6YN"
+          ],
+          "logo_frase_completa": [
+            "jXnvhzLSF14ghzq",
+            "1kgGUQq7uf0xhot"
+          ],
+          "logo_final_copia_limpia": [
+            "pqiiuzkDBHXux9g",
+            "ozYh6fzSgMtnLVd"
+          ],
+          "favicon_1": [
+            "Fjn29Wg9iC-jkLt",
+            "vlXjddt-izFZORZ"
+          ],
+          "favicon_2": [
+            "MK__WoAora0-sj3",
+            "7EfXv3RyHzsSmjW"
+          ],
+          "favicon_3": [
+            "9O8R_bOWygrlu-l",
+            "7X7HEXQTaSuU3B2"
+          ]
+        },
+        "formato": "https://www.canva.com/d/CODIGO — a Julio siempre se le manda el segundo (compartir)"
+      }
+    },
+    {
+      "id": "TEC-FIGMA",
+      "tipo": "tecnologia",
+      "nombre": "Figma",
+      "descripcion": "Existe la carpeta logo/identidad-visual/figma; uso por confirmar (PEND-08).",
+      "estado": "propuesto"
+    },
+    {
+      "id": "TEC-DRIVE",
+      "tipo": "tecnologia",
+      "nombre": "Google Drive",
+      "descripcion": "Carpeta compartida para el lote inicial de fotos y videos.",
+      "estado": "decidido"
+    },
+    {
+      "id": "TEC-CLAUDE",
+      "tipo": "tecnologia",
+      "nombre": "Claude Code",
+      "descripcion": "Herramienta de implementación del proyecto (DEC-29).",
+      "estado": "decidido"
+    },
+    {
+      "id": "TEC-GARET",
+      "tipo": "tecnologia",
+      "nombre": "Garet",
+      "descripcion": "Tipografía del logotipo; se usa trazada, no se licencia para web.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-01",
+      "tipo": "decision",
+      "nombre": "Fase 1: sitio de una página sin backend",
+      "descripcion": "Una sola página en español, estática, sin base de datos.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-02",
+      "tipo": "decision",
+      "nombre": "Contacto por WhatsApp prellenado",
+      "descripcion": "El formulario no manda correo: arma un enlace wa.me con los datos del viaje ya redactados.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-03",
+      "tipo": "decision",
+      "nombre": "Español primero, inglés después",
+      "descripcion": "Clientes mayormente nacionales y equipo que solo habla español. Se deja la estructura de rutas lista para traducir más adelante.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-04",
+      "tipo": "decision",
+      "nombre": "Reservas como fase aparte",
+      "descripcion": "El sistema de reservas se hace solo si el volumen lo justifica.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-05",
+      "tipo": "decision",
+      "nombre": "Alcance mínimo de reservas",
+      "descripcion": "Solicitud con todos los campos, calendario por unidad (lo más importante), estados de reserva, registro de pagos en efectivo, funcional desde el celular.",
+      "estado": "decidido",
+      "detalles": {
+        "fuera": [
+          "pagos en línea",
+          "cuentas de cliente",
+          "disponibilidad en tiempo real"
+        ]
+      }
+    },
+    {
+      "id": "DEC-06",
+      "tipo": "decision",
+      "nombre": "Sin testimonios hasta tener reseñas reales",
+      "descripcion": "No se publican testimonios mientras no existan reseñas verificables.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-07",
+      "tipo": "decision",
+      "nombre": "Stack",
+      "descripcion": "Next.js App Router + Vercel + Supabase. Google OAuth solo para el panel. Mercado Pago a futuro. NestJS descartado.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-08",
+      "tipo": "decision",
+      "nombre": "Contenido en un solo archivo de datos",
+      "descripcion": "Precios, destinos, paquetes y unidades viven en un archivo de datos, no regados en el maquetado.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-09",
+      "tipo": "decision",
+      "nombre": "Precios como «desde $X»",
+      "descripcion": "Para reducir actualizaciones y respetar que Julio ajusta precios por cliente.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-10",
+      "tipo": "decision",
+      "nombre": "Ventana fija de cambios",
+      "descripcion": "Los cambios de contenido se juntan y se publican en un día fijo (p. ej. lunes). Julio se adapta a los tiempos del responsable; falta fijar el día.",
+      "estado": "propuesto"
+    },
+    {
+      "id": "DEC-11",
+      "tipo": "decision",
+      "nombre": "Fotos: 10–12, proporciones fijas",
+      "descripcion": "Revisión por temporada; aspect-ratio + object-fit: cover para que una foto vertical no rompa el diseño.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-12",
+      "tipo": "decision",
+      "nombre": "Recepción de fotos",
+      "descripcion": "Lote inicial por carpeta de Drive (originales, no de Facebook ni WhatsApp); fotos sueltas por WhatsApp.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-13",
+      "tipo": "decision",
+      "nombre": "Logotipo elegido",
+      "descripcion": "Propuesta 1: cordillera de trazo continuo + ruta punteada; montaña y texto en azul, ruta en terracota.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-14",
+      "tipo": "decision",
+      "nombre": "Paleta base",
+      "descripcion": "Azul tinta #334351, crema #FBF3E6, terracota #BE6A47.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-15",
+      "tipo": "decision",
+      "nombre": "Ruta en terracota; monocromo como variante",
+      "descripcion": "La ruta es el único elemento cálido. La versión monocromática es variante obligatoria, no alternativa.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-16",
+      "tipo": "decision",
+      "nombre": "Favicon solo con la montaña",
+      "descripcion": "Sin ruta ni texto.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-17",
+      "tipo": "decision",
+      "nombre": "Tipografía web gratuita",
+      "descripcion": "Garet queda solo en el logo (trazado). Para el sitio se elige una de Poppins, Outfit o Jost.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "DEC-18",
+      "tipo": "decision",
+      "nombre": "Dominio a nombre de Julio, administrado por el responsable",
+      "descripcion": "Julio está de acuerdo. Sugerencia: chiapasconjulio.com (más corto y dictable).",
+      "estado": "decidido",
+      "detalles": {
+        "dominio_sugerido": "chiapasconjulio.com (propuesto)"
+      }
+    },
+    {
+      "id": "DEC-19",
+      "tipo": "decision",
+      "nombre": "Correo exclusivo del negocio",
+      "descripcion": "Crear una cuenta aparte (p. ej. visitachiapasconjulio@gmail.com) para Google, el sitio y la carpeta de fotos. El hotmail, Facebook, Instagram y WhatsApp de Julio no se tocan.",
+      "estado": "propuesto"
+    },
+    {
+      "id": "DEC-20",
+      "tipo": "decision",
+      "nombre": "Perfil de Google como negocio de área de servicio",
+      "descripcion": "Nombre exacto, sin palabras clave; sin dirección pública; categoría principal servicio de transporte o agencia de viajes; reseñas pedidas al bajar a la gente de la unidad, una sola vez.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-21",
+      "tipo": "decision",
+      "nombre": "Vinil con logo en las unidades",
+      "descripcion": "Rotular las unidades: sirve como prueba de existencia en la verificación por video de Google y como identidad en la calle.",
+      "estado": "propuesto"
+    },
+    {
+      "id": "DEC-22",
+      "tipo": "decision",
+      "nombre": "El sitio prioriza la confianza sobre la captación",
+      "descripcion": "Lo primero que resuelve el sitio: quién es Julio, qué unidades tiene, cómo se aparta, qué pasa si se cancela. La captación de nuevos es secundaria.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-23",
+      "tipo": "decision",
+      "nombre": "Julio como cara de la marca",
+      "descripcion": "Foto real de Julio y su historia (16 años) en lugar visible. «Con Julio» está en el nombre.",
+      "estado": "propuesto"
+    },
+    {
+      "id": "DEC-24",
+      "tipo": "decision",
+      "nombre": "Vocabulario de marca",
+      "descripcion": "«Operador», no «chofer». «Unidad» para los vehículos. Tour = recorrido con paradas; traslado = punto a punto.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-25",
+      "tipo": "decision",
+      "nombre": "Precio por grupo y unidad, no por persona",
+      "descripcion": "El sitio muestra el precio del viaje completo según el tamaño del grupo/unidad. Depende de resolver INC-03.",
+      "estado": "propuesto"
+    },
+    {
+      "id": "DEC-26",
+      "tipo": "decision",
+      "nombre": "Mostrar las políticas de confianza",
+      "descripcion": "Anticipo 50%, pago en efectivo posible, devolución íntegra por fallecimiento o enfermedad, recogida en el hospedaje: van visibles en el sitio porque responden a la desconfianza antes del anticipo.",
+      "estado": "propuesto"
+    },
+    {
+      "id": "DEC-27",
+      "tipo": "decision",
+      "nombre": "Terracota solo para acentos; tono oscuro para texto",
+      "descripcion": "La terracota base (3.57:1 sobre crema) se usa en ruta, íconos y títulos grandes. Para texto, enlaces y botones se propone #A65A3B (4.6:1 sobre crema; blanco encima 5.06:1).",
+      "estado": "propuesto"
+    },
+    {
+      "id": "DEC-28",
+      "tipo": "decision",
+      "nombre": "Redibujar el logo en vector limpio",
+      "descripcion": "El SVG actual se calcó del PNG: grosor irregular en la montaña y trazos de la ruta disparejos. Se redibuja con la misma forma (no es rediseño) para vinil y tamaños grandes.",
+      "estado": "propuesto"
+    },
+    {
+      "id": "DEC-29",
+      "tipo": "decision",
+      "nombre": "Trabajo con Claude Code mediante ai/handoff",
+      "descripcion": "El consultor asigna en siguiente.md; Claude Code implementa y reporta en reporte.md; el consultor aprueba o rechaza en revisiones-pendientes.md y actualiza grafo y estado.",
+      "estado": "decidido"
+    },
+    {
+      "id": "DEC-30",
+      "tipo": "decision",
+      "nombre": "Grafo como fuente de verdad",
+      "descripcion": "ai/context/knowledge-graph.json manda sobre cualquier documento anterior (incluido docs/estado del proyecto.md).",
+      "estado": "decidido"
+    },
+    {
+      "id": "INC-01",
+      "tipo": "inconsistencia",
+      "nombre": "Composición de la flota",
+      "descripcion": "Julio dijo «4 vans, 4 operadores, 22 y 24», pero el desglose es 1 coche + vans de 7, 11 y 20. ¿«22 y 24» son años-modelo? Falta la marca y el modelo de cada unidad.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "INC-02",
+      "tipo": "inconsistencia",
+      "nombre": "Capacidad de la van mediana",
+      "descripcion": "Capacidad declarada: 11. Tabla de precios: 8 a 14 personas.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "INC-03",
+      "tipo": "inconsistencia",
+      "nombre": "Modelo de cobro",
+      "descripcion": "Dice «cobra por persona» y también «viaje completo cuando es familia o grupo». La tabla muestra precio total por unidad para su mínimo y su máximo. ¿Entre mínimo y máximo se interpola por persona?",
+      "estado": "pendiente"
+    },
+    {
+      "id": "INC-04",
+      "tipo": "inconsistencia",
+      "nombre": "Cupo mínimo",
+      "descripcion": "«No hay cupo mínimo, puede llevar a una persona con el paquete completo» frente a mínimos por unidad (coche desde 2).",
+      "estado": "pendiente"
+    },
+    {
+      "id": "INC-05",
+      "tipo": "inconsistencia",
+      "nombre": "Documento de estado de agosto desactualizado",
+      "descripcion": "docs/estado del proyecto.md dice 2 camionetas y 2 choferes y marca el modelo de negocio como sin confirmar. Lo reemplaza ai/context/estado-actual.md. Además, ahí se listan archivos entregados (Logo.tsx, logo-completo.svg, logo-simbolo.svg, comparativa-logo.png, logo-monocromatico-azul.png, prompts y cuestionario) que no están en la carpeta del proyecto.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "INC-06",
+      "tipo": "inconsistencia",
+      "nombre": "Duración del tour a Palenque",
+      "descripcion": "«2 días, 5 horas de camino más las 4 paradas» frente a «San Cristóbal–Palenque 11 horas aprox.». Probablemente 11 h es la jornada completa del primer día.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "INC-07",
+      "tipo": "inconsistencia",
+      "nombre": "Qué entradas incluye",
+      "descripcion": "«Incluye entradas», pero no está claro si el recorrido en lancha del Sumidero (no es una entrada) va incluido.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "PEND-01",
+      "tipo": "pregunta_abierta",
+      "nombre": "Duración en días de cada paquete",
+      "descripcion": "¿Cuántos días dura el Paquete Básico y cuántos Chiapas Total?",
+      "estado": "pendiente"
+    },
+    {
+      "id": "PEND-02",
+      "tipo": "pregunta_abierta",
+      "nombre": "Precio base de tours sueltos y traslados",
+      "descripcion": "Para mostrar «desde $X» por tour y por traslado al aeropuerto, según unidad.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "PEND-03",
+      "tipo": "pregunta_abierta",
+      "nombre": "WhatsApp y correo definitivos",
+      "descripcion": "Confirmar número (967 122 7321) con un mensaje de prueba y crear/confirmar el correo del negocio.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "PEND-04",
+      "tipo": "pregunta_abierta",
+      "nombre": "Modelos y años de las unidades",
+      "descripcion": "Marca, modelo, año y capacidad real de cada unidad (resuelve INC-01 e INC-02).",
+      "estado": "pendiente"
+    },
+    {
+      "id": "PEND-05",
+      "tipo": "pregunta_abierta",
+      "nombre": "Constancias de credenciales",
+      "descripcion": "Qué documento respalda guía de turistas, SECTUR, seguro de viajero y colegio de guías. Solo lo comprobable se publica.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "PEND-06",
+      "tipo": "pregunta_abierta",
+      "nombre": "¿Se redibuja el logo?",
+      "descripcion": "Confirmar si se abre una ronda de limpieza vectorial (misma forma) antes de producir aplicaciones.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "PEND-07",
+      "tipo": "pregunta_abierta",
+      "nombre": "Tipografía web",
+      "descripcion": "Elegir entre Poppins, Outfit o Jost (u otra gratuita) para el sitio.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "PEND-08",
+      "tipo": "pregunta_abierta",
+      "nombre": "Formato del manual de identidad",
+      "descripcion": "Manual navegable (página), Figma o solo brief.md en la carpeta.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "PEND-09",
+      "tipo": "pregunta_abierta",
+      "nombre": "Costos recurrentes y mantenimiento",
+      "descripcion": "Dominio anual, hosting y base de datos; cuántos cambios entran y desde cuándo se cobra. Se habla después de la cotización del maquetado.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "PEND-10",
+      "tipo": "pregunta_abierta",
+      "nombre": "Permiso de uso de imagen por escrito",
+      "descripcion": "Julio dice que tiene autorización de sus clientes; conviene tenerlo por escrito.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "PEND-11",
+      "tipo": "pregunta_abierta",
+      "nombre": "Cómo se vende el hospedaje",
+      "descripcion": "¿Se muestra en el sitio? ¿Con precio o «a solicitud»?",
+      "estado": "pendiente"
+    },
+    {
+      "id": "PEND-12",
+      "tipo": "pregunta_abierta",
+      "nombre": "¿Se menciona la facturación?",
+      "descripcion": "Con RFC inactivo, decidir si el sitio dice algo (p. ej. «factura en traslados al aeropuerto») o nada.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "PEND-13",
+      "tipo": "pregunta_abierta",
+      "nombre": "Dominio final",
+      "descripcion": "Confirmar chiapasconjulio.com u otra opción y su disponibilidad.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "PEND-14",
+      "tipo": "pregunta_abierta",
+      "nombre": "Fotos y videos clave",
+      "descripcion": "Faltan: Julio, unidad por fuera, interior, gente disfrutando, paisaje horizontal; más videos del Drive.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "PEND-15",
+      "tipo": "pregunta_abierta",
+      "nombre": "Estado del Perfil de Google",
+      "descripcion": "Julio dice que «recién se registró». ¿Está verificado? ¿Con qué cuenta?",
+      "estado": "pendiente"
+    },
+    {
+      "id": "PEND-16",
+      "tipo": "pregunta_abierta",
+      "nombre": "Voz: primera persona o «nosotros»",
+      "descripcion": "Definir si el sitio habla como Julio («te recojo en tu hotel») o como equipo.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "PEND-17",
+      "tipo": "pregunta_abierta",
+      "nombre": "Plantillas originales del handoff",
+      "descripcion": "Los archivos de ai/handoff se armaron desde la captura de la estructura; si se comparten las plantillas del otro proyecto, se alinean.",
+      "estado": "pendiente"
+    },
+    {
+      "id": "INV-01",
+      "tipo": "invariante",
+      "nombre": "INV-01",
+      "descripcion": "En cualquier texto público se dice «operador», nunca «chofer».",
+      "estado": "obligatorio"
+    },
+    {
+      "id": "INV-02",
+      "tipo": "invariante",
+      "nombre": "INV-02",
+      "descripcion": "El servicio nunca se presenta como compartido, colectivo ni por asiento: siempre es unidad privada completa.",
+      "estado": "obligatorio"
+    },
+    {
+      "id": "INV-03",
+      "tipo": "invariante",
+      "nombre": "INV-03",
+      "descripcion": "No se inventan testimonios, reseñas, cifras de clientes ni calificaciones.",
+      "estado": "obligatorio"
+    },
+    {
+      "id": "INV-04",
+      "tipo": "invariante",
+      "nombre": "INV-04",
+      "descripcion": "No se afirman credenciales, permisos, seguros, facturación ni certificaciones sin constancia confirmada (PEND-05).",
+      "estado": "obligatorio"
+    },
+    {
+      "id": "INV-05",
+      "tipo": "invariante",
+      "nombre": "INV-05",
+      "descripcion": "Precios, destinos, paquetes y unidades se leen solo del archivo de datos único; nada de valores escritos a mano en componentes.",
+      "estado": "obligatorio"
+    },
+    {
+      "id": "INV-06",
+      "tipo": "invariante",
+      "nombre": "INV-06",
+      "descripcion": "El nombre es exactamente «Visita Chiapas con Julio». Nunca «Descubre Chiapas con Julio» ni variantes con palabras clave.",
+      "estado": "obligatorio"
+    },
+    {
+      "id": "INV-07",
+      "tipo": "invariante",
+      "nombre": "INV-07",
+      "descripcion": "Los colores salen solo de los tokens de la marca. La terracota base no se usa para texto de tamaño normal (contraste 3.57:1).",
+      "estado": "obligatorio"
+    },
+    {
+      "id": "INV-08",
+      "tipo": "invariante",
+      "nombre": "INV-08",
+      "descripcion": "Solo se usan fotos propias de Julio o de sus viajes con autorización; nunca bajadas de Facebook ni de bancos presentadas como propias.",
+      "estado": "obligatorio"
+    },
+    {
+      "id": "INV-09",
+      "tipo": "invariante",
+      "nombre": "INV-09",
+      "descripcion": "El turista nunca necesita crear cuenta ni iniciar sesión.",
+      "estado": "obligatorio"
+    },
+    {
+      "id": "INV-10",
+      "tipo": "invariante",
+      "nombre": "INV-10",
+      "descripcion": "Claude Code no cambia decisiones, invariantes ni el grafo por su cuenta: lo propone en el reporte y el consultor decide.",
+      "estado": "obligatorio"
+    },
+    {
+      "id": "INV-11",
+      "tipo": "invariante",
+      "nombre": "INV-11",
+      "descripcion": "Nada que esté en un nodo fuera_de_alcance se implementa sin aprobación.",
+      "estado": "obligatorio"
+    },
+    {
+      "id": "INV-12",
+      "tipo": "invariante",
+      "nombre": "INV-12",
+      "descripcion": "La estética no cae en lujo frío, aventura extrema, turismo masivo ni agencia genérica de tours.",
+      "estado": "obligatorio"
+    },
+    {
+      "id": "INV-13",
+      "tipo": "invariante",
+      "nombre": "INV-13",
+      "descripcion": "El hotmail, Facebook, Instagram y WhatsApp actuales de Julio no se modifican.",
+      "estado": "obligatorio"
+    },
+    {
+      "id": "INV-14",
+      "tipo": "invariante",
+      "nombre": "INV-14",
+      "descripcion": "Los nodos en estado propuesto, pendiente o preliminar no son definitivos: se pregunta antes de asumir.",
+      "estado": "obligatorio"
+    },
+    {
+      "id": "INV-15",
+      "tipo": "invariante",
+      "nombre": "INV-15",
+      "descripcion": "El sitio está en español; ningún texto se publica en inglés sin la fase de traducción.",
+      "estado": "obligatorio"
+    },
+    {
+      "id": "FDA-01",
+      "tipo": "fuera_de_alcance",
+      "nombre": "Pagos en línea",
+      "descripcion": "Ni en el sitio ni en el MVP de reservas.",
+      "estado": "fuera_de_alcance"
+    },
+    {
+      "id": "FDA-02",
+      "tipo": "fuera_de_alcance",
+      "nombre": "Cuentas de cliente",
+      "descripcion": "El turista no se registra.",
+      "estado": "fuera_de_alcance"
+    },
+    {
+      "id": "FDA-03",
+      "tipo": "fuera_de_alcance",
+      "nombre": "Disponibilidad en tiempo real",
+      "descripcion": "El cliente no ve el calendario; solicita y Julio confirma.",
+      "estado": "fuera_de_alcance"
+    },
+    {
+      "id": "FDA-04",
+      "tipo": "fuera_de_alcance",
+      "nombre": "Módulo de administración de fotos",
+      "descripcion": "Las fotos las cambia el responsable.",
+      "estado": "fuera_de_alcance"
+    },
+    {
+      "id": "FDA-05",
+      "tipo": "fuera_de_alcance",
+      "nombre": "Tours colectivos",
+      "descripcion": "No es parte del negocio.",
+      "estado": "fuera_de_alcance"
+    },
+    {
+      "id": "FDA-06",
+      "tipo": "fuera_de_alcance",
+      "nombre": "Viajes escolares",
+      "descripcion": "Julio no los hace.",
+      "estado": "fuera_de_alcance"
+    },
+    {
+      "id": "FDA-07",
+      "tipo": "fuera_de_alcance",
+      "nombre": "Sitio en inglés en el lanzamiento",
+      "descripcion": "Se prepara la estructura; la traducción va después.",
+      "estado": "fuera_de_alcance"
+    },
+    {
+      "id": "FDA-08",
+      "tipo": "fuera_de_alcance",
+      "nombre": "Sección de testimonios",
+      "descripcion": "Hasta que haya reseñas reales.",
+      "estado": "fuera_de_alcance"
+    }
+  ],
+  "aristas": [
+    {
+      "de": "PRY-01",
+      "a": "OBJ-GEN",
+      "relacion": "persigue"
+    },
+    {
+      "de": "PRY-01",
+      "a": "OBJ-01",
+      "relacion": "persigue"
+    },
+    {
+      "de": "PRY-01",
+      "a": "OBJ-02",
+      "relacion": "persigue"
+    },
+    {
+      "de": "PRY-01",
+      "a": "OBJ-03",
+      "relacion": "persigue"
+    },
+    {
+      "de": "PRY-01",
+      "a": "OBJ-04",
+      "relacion": "persigue"
+    },
+    {
+      "de": "PRY-01",
+      "a": "OBJ-05",
+      "relacion": "persigue"
+    },
+    {
+      "de": "PRY-01",
+      "a": "RES-01",
+      "relacion": "limitado_por"
+    },
+    {
+      "de": "PRY-01",
+      "a": "RES-02",
+      "relacion": "limitado_por"
+    },
+    {
+      "de": "PRY-01",
+      "a": "RES-03",
+      "relacion": "limitado_por"
+    },
+    {
+      "de": "PRY-01",
+      "a": "RES-04",
+      "relacion": "limitado_por"
+    },
+    {
+      "de": "PRY-01",
+      "a": "RES-05",
+      "relacion": "limitado_por"
+    },
+    {
+      "de": "PRY-01",
+      "a": "RES-06",
+      "relacion": "limitado_por"
+    },
+    {
+      "de": "PRY-01",
+      "a": "RES-07",
+      "relacion": "limitado_por"
+    },
+    {
+      "de": "PRY-01",
+      "a": "FASE-0",
+      "relacion": "contiene"
+    },
+    {
+      "de": "PRY-01",
+      "a": "FASE-1",
+      "relacion": "contiene"
+    },
+    {
+      "de": "PRY-01",
+      "a": "FASE-2",
+      "relacion": "contiene"
+    },
+    {
+      "de": "PRY-01",
+      "a": "FASE-3",
+      "relacion": "contiene"
+    },
+    {
+      "de": "PRY-01",
+      "a": "FASE-4",
+      "relacion": "contiene"
+    },
+    {
+      "de": "PRY-01",
+      "a": "MOD-IDENTIDAD",
+      "relacion": "contiene"
+    },
+    {
+      "de": "PRY-01",
+      "a": "MOD-SITIO",
+      "relacion": "contiene"
+    },
+    {
+      "de": "PRY-01",
+      "a": "MOD-DATOS",
+      "relacion": "contiene"
+    },
+    {
+      "de": "PRY-01",
+      "a": "MOD-RESERVAS",
+      "relacion": "contiene"
+    },
+    {
+      "de": "PRY-01",
+      "a": "MOD-PANEL",
+      "relacion": "contiene"
+    },
+    {
+      "de": "PRY-01",
+      "a": "MOD-GBP",
+      "relacion": "contiene"
+    },
+    {
+      "de": "PRY-01",
+      "a": "MOD-HANDOFF",
+      "relacion": "contiene"
+    },
+    {
+      "de": "PRY-01",
+      "a": "SRV-TOUR",
+      "relacion": "ofrece"
+    },
+    {
+      "de": "PRY-01",
+      "a": "SRV-TRASLADO",
+      "relacion": "ofrece"
+    },
+    {
+      "de": "PRY-01",
+      "a": "SRV-PAQUETE",
+      "relacion": "ofrece"
+    },
+    {
+      "de": "PRY-01",
+      "a": "SRV-MEDIDA",
+      "relacion": "ofrece"
+    },
+    {
+      "de": "PRY-01",
+      "a": "UNI-01",
+      "relacion": "opera_con"
+    },
+    {
+      "de": "PRY-01",
+      "a": "UNI-02",
+      "relacion": "opera_con"
+    },
+    {
+      "de": "PRY-01",
+      "a": "UNI-03",
+      "relacion": "opera_con"
+    },
+    {
+      "de": "PRY-01",
+      "a": "UNI-04",
+      "relacion": "opera_con"
+    },
+    {
+      "de": "PRY-01",
+      "a": "NEG-01",
+      "relacion": "describe"
+    },
+    {
+      "de": "PRY-01",
+      "a": "NEG-02",
+      "relacion": "describe"
+    },
+    {
+      "de": "PRY-01",
+      "a": "NEG-03",
+      "relacion": "describe"
+    },
+    {
+      "de": "PRY-01",
+      "a": "NEG-04",
+      "relacion": "describe"
+    },
+    {
+      "de": "PRY-01",
+      "a": "NEG-05",
+      "relacion": "describe"
+    },
+    {
+      "de": "PRY-01",
+      "a": "NEG-06",
+      "relacion": "describe"
+    },
+    {
+      "de": "PRY-01",
+      "a": "NEG-07",
+      "relacion": "describe"
+    },
+    {
+      "de": "PRY-01",
+      "a": "NEG-08",
+      "relacion": "describe"
+    },
+    {
+      "de": "PRY-01",
+      "a": "NEG-09",
+      "relacion": "describe"
+    },
+    {
+      "de": "PRY-01",
+      "a": "NEG-10",
+      "relacion": "describe"
+    },
+    {
+      "de": "PRY-01",
+      "a": "NEG-11",
+      "relacion": "describe"
+    },
+    {
+      "de": "PRY-01",
+      "a": "NEG-12",
+      "relacion": "describe"
+    },
+    {
+      "de": "PRY-01",
+      "a": "NEG-13",
+      "relacion": "describe"
+    },
+    {
+      "de": "PRY-01",
+      "a": "NEG-14",
+      "relacion": "describe"
+    },
+    {
+      "de": "PRY-01",
+      "a": "NEG-15",
+      "relacion": "describe"
+    },
+    {
+      "de": "FASE-0",
+      "a": "MOD-HANDOFF",
+      "relacion": "entrega"
+    },
+    {
+      "de": "FASE-0",
+      "a": "ACT-CONSULTOR",
+      "relacion": "responsable"
+    },
+    {
+      "de": "FASE-1",
+      "a": "MOD-IDENTIDAD",
+      "relacion": "entrega"
+    },
+    {
+      "de": "FASE-1",
+      "a": "FASE-0",
+      "relacion": "sigue_a"
+    },
+    {
+      "de": "FASE-2",
+      "a": "MOD-SITIO",
+      "relacion": "entrega"
+    },
+    {
+      "de": "FASE-2",
+      "a": "MOD-DATOS",
+      "relacion": "entrega"
+    },
+    {
+      "de": "FASE-2",
+      "a": "FASE-1",
+      "relacion": "sigue_a"
+    },
+    {
+      "de": "FASE-3",
+      "a": "MOD-GBP",
+      "relacion": "entrega"
+    },
+    {
+      "de": "FASE-3",
+      "a": "ACT-JULIO",
+      "relacion": "responsable"
+    },
+    {
+      "de": "FASE-3",
+      "a": "ACT-RESP",
+      "relacion": "responsable"
+    },
+    {
+      "de": "FASE-4",
+      "a": "MOD-RESERVAS",
+      "relacion": "entrega"
+    },
+    {
+      "de": "FASE-4",
+      "a": "MOD-PANEL",
+      "relacion": "entrega"
+    },
+    {
+      "de": "FASE-4",
+      "a": "FASE-2",
+      "relacion": "sigue_a"
+    },
+    {
+      "de": "FASE-1",
+      "a": "ACT-CC",
+      "relacion": "implementada_por"
+    },
+    {
+      "de": "FASE-2",
+      "a": "ACT-CC",
+      "relacion": "implementada_por"
+    },
+    {
+      "de": "FASE-4",
+      "a": "ACT-CC",
+      "relacion": "implementada_por"
+    },
+    {
+      "de": "SRV-TOUR",
+      "a": "DST-01",
+      "relacion": "incluye"
+    },
+    {
+      "de": "SRV-TOUR",
+      "a": "DST-02",
+      "relacion": "incluye"
+    },
+    {
+      "de": "SRV-TOUR",
+      "a": "DST-03",
+      "relacion": "incluye"
+    },
+    {
+      "de": "SRV-TOUR",
+      "a": "DST-04",
+      "relacion": "incluye"
+    },
+    {
+      "de": "SRV-TOUR",
+      "a": "DST-05",
+      "relacion": "incluye"
+    },
+    {
+      "de": "SRV-TRASLADO",
+      "a": "DST-09",
+      "relacion": "incluye"
+    },
+    {
+      "de": "SRV-PAQUETE",
+      "a": "PAQ-01",
+      "relacion": "incluye"
+    },
+    {
+      "de": "SRV-PAQUETE",
+      "a": "PAQ-02",
+      "relacion": "incluye"
+    },
+    {
+      "de": "PAQ-01",
+      "a": "DST-01",
+      "relacion": "incluye"
+    },
+    {
+      "de": "PAQ-01",
+      "a": "DST-02",
+      "relacion": "incluye"
+    },
+    {
+      "de": "PAQ-01",
+      "a": "DST-03",
+      "relacion": "incluye"
+    },
+    {
+      "de": "PAQ-01",
+      "a": "DST-04",
+      "relacion": "incluye"
+    },
+    {
+      "de": "PAQ-01",
+      "a": "DST-05",
+      "relacion": "incluye"
+    },
+    {
+      "de": "PAQ-02",
+      "a": "PAQ-01",
+      "relacion": "extiende"
+    },
+    {
+      "de": "PAQ-02",
+      "a": "DST-06",
+      "relacion": "incluye"
+    },
+    {
+      "de": "PAQ-02",
+      "a": "DST-07",
+      "relacion": "incluye"
+    },
+    {
+      "de": "PAQ-02",
+      "a": "DST-08",
+      "relacion": "incluye"
+    },
+    {
+      "de": "TAR-01",
+      "a": "PAQ-01",
+      "relacion": "tarifa_de"
+    },
+    {
+      "de": "TAR-02",
+      "a": "PAQ-02",
+      "relacion": "tarifa_de"
+    },
+    {
+      "de": "TAR-03",
+      "a": "SRV-TOUR",
+      "relacion": "tarifa_de"
+    },
+    {
+      "de": "TAR-03",
+      "a": "SRV-TRASLADO",
+      "relacion": "tarifa_de"
+    },
+    {
+      "de": "TAR-03",
+      "a": "SRV-MEDIDA",
+      "relacion": "tarifa_de"
+    },
+    {
+      "de": "TAR-01",
+      "a": "UNI-01",
+      "relacion": "usa_unidad"
+    },
+    {
+      "de": "TAR-01",
+      "a": "UNI-02",
+      "relacion": "usa_unidad"
+    },
+    {
+      "de": "TAR-01",
+      "a": "UNI-03",
+      "relacion": "usa_unidad"
+    },
+    {
+      "de": "TAR-01",
+      "a": "UNI-04",
+      "relacion": "usa_unidad"
+    },
+    {
+      "de": "TAR-02",
+      "a": "UNI-01",
+      "relacion": "usa_unidad"
+    },
+    {
+      "de": "TAR-02",
+      "a": "UNI-02",
+      "relacion": "usa_unidad"
+    },
+    {
+      "de": "TAR-02",
+      "a": "UNI-03",
+      "relacion": "usa_unidad"
+    },
+    {
+      "de": "TAR-02",
+      "a": "UNI-04",
+      "relacion": "usa_unidad"
+    },
+    {
+      "de": "TAR-03",
+      "a": "PEND-02",
+      "relacion": "bloqueada_por"
+    },
+    {
+      "de": "NEG-11",
+      "a": "DST-01",
+      "relacion": "referencia",
+      "nota": "más vendido"
+    },
+    {
+      "de": "NEG-11",
+      "a": "DST-02",
+      "relacion": "referencia",
+      "nota": "más ganancia"
+    },
+    {
+      "de": "NEG-14",
+      "a": "PAQ-01",
+      "relacion": "complementa"
+    },
+    {
+      "de": "NEG-14",
+      "a": "PEND-11",
+      "relacion": "afinado_por"
+    },
+    {
+      "de": "SRV-TOUR",
+      "a": "POL-01",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-TOUR",
+      "a": "POL-02",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-TOUR",
+      "a": "POL-05",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-TOUR",
+      "a": "POL-06",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-TRASLADO",
+      "a": "POL-01",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-TRASLADO",
+      "a": "POL-02",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-TRASLADO",
+      "a": "POL-05",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-TRASLADO",
+      "a": "POL-06",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-PAQUETE",
+      "a": "POL-01",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-PAQUETE",
+      "a": "POL-02",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-PAQUETE",
+      "a": "POL-05",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-PAQUETE",
+      "a": "POL-06",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-MEDIDA",
+      "a": "POL-01",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-MEDIDA",
+      "a": "POL-02",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-MEDIDA",
+      "a": "POL-05",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-MEDIDA",
+      "a": "POL-06",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-TOUR",
+      "a": "POL-03",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-TOUR",
+      "a": "POL-04",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-TOUR",
+      "a": "POL-07",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-PAQUETE",
+      "a": "POL-03",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-PAQUETE",
+      "a": "POL-04",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "SRV-PAQUETE",
+      "a": "POL-07",
+      "relacion": "regido_por"
+    },
+    {
+      "de": "TAR-01",
+      "a": "POL-08",
+      "relacion": "regida_por"
+    },
+    {
+      "de": "TAR-02",
+      "a": "POL-08",
+      "relacion": "regida_por"
+    },
+    {
+      "de": "ACT-EXT",
+      "a": "POL-10",
+      "relacion": "atendido_segun"
+    },
+    {
+      "de": "POL-01",
+      "a": "NEG-02",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "POL-01",
+      "a": "FDA-05",
+      "relacion": "excluye"
+    },
+    {
+      "de": "POL-09",
+      "a": "INC-04",
+      "relacion": "afectada_por"
+    },
+    {
+      "de": "ACT-JULIO",
+      "a": "NEG-07",
+      "relacion": "atiende_en"
+    },
+    {
+      "de": "ACT-OPER",
+      "a": "UNI-01",
+      "relacion": "opera"
+    },
+    {
+      "de": "ACT-OPER",
+      "a": "UNI-02",
+      "relacion": "opera"
+    },
+    {
+      "de": "ACT-OPER",
+      "a": "UNI-03",
+      "relacion": "opera"
+    },
+    {
+      "de": "ACT-OPER",
+      "a": "UNI-04",
+      "relacion": "opera"
+    },
+    {
+      "de": "ACT-CONSULTOR",
+      "a": "MOD-HANDOFF",
+      "relacion": "asigna_en"
+    },
+    {
+      "de": "ACT-CC",
+      "a": "MOD-HANDOFF",
+      "relacion": "reporta_en"
+    },
+    {
+      "de": "ACT-RESP",
+      "a": "DEC-18",
+      "relacion": "administra"
+    },
+    {
+      "de": "MRC-SIMBOLO",
+      "a": "MRC-LOGO",
+      "relacion": "compone"
+    },
+    {
+      "de": "MRC-RUTA",
+      "a": "MRC-LOGO",
+      "relacion": "compone"
+    },
+    {
+      "de": "MRC-MONO",
+      "a": "MRC-LOGO",
+      "relacion": "variante_de"
+    },
+    {
+      "de": "MRC-FAVICON",
+      "a": "MRC-SIMBOLO",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "MRC-LOGO",
+      "a": "MOD-IDENTIDAD",
+      "relacion": "parte_de"
+    },
+    {
+      "de": "MRC-SIMBOLO",
+      "a": "MOD-IDENTIDAD",
+      "relacion": "parte_de"
+    },
+    {
+      "de": "MRC-RUTA",
+      "a": "MOD-IDENTIDAD",
+      "relacion": "parte_de"
+    },
+    {
+      "de": "MRC-MONO",
+      "a": "MOD-IDENTIDAD",
+      "relacion": "parte_de"
+    },
+    {
+      "de": "MRC-FAVICON",
+      "a": "MOD-IDENTIDAD",
+      "relacion": "parte_de"
+    },
+    {
+      "de": "MRC-PALETA",
+      "a": "MOD-IDENTIDAD",
+      "relacion": "parte_de"
+    },
+    {
+      "de": "MRC-TIPO",
+      "a": "MOD-IDENTIDAD",
+      "relacion": "parte_de"
+    },
+    {
+      "de": "MRC-FOTO",
+      "a": "MOD-IDENTIDAD",
+      "relacion": "parte_de"
+    },
+    {
+      "de": "MRC-VOZ",
+      "a": "MOD-IDENTIDAD",
+      "relacion": "parte_de"
+    },
+    {
+      "de": "MRC-PERS",
+      "a": "MOD-IDENTIDAD",
+      "relacion": "parte_de"
+    },
+    {
+      "de": "MRC-LOGO",
+      "a": "DEC-13",
+      "relacion": "definido_por"
+    },
+    {
+      "de": "MRC-PALETA",
+      "a": "DEC-14",
+      "relacion": "definido_por"
+    },
+    {
+      "de": "MRC-PALETA",
+      "a": "DEC-27",
+      "relacion": "definido_por"
+    },
+    {
+      "de": "MRC-RUTA",
+      "a": "DEC-15",
+      "relacion": "definido_por"
+    },
+    {
+      "de": "MRC-MONO",
+      "a": "DEC-15",
+      "relacion": "definido_por"
+    },
+    {
+      "de": "MRC-FAVICON",
+      "a": "DEC-16",
+      "relacion": "definido_por"
+    },
+    {
+      "de": "MRC-TIPO",
+      "a": "DEC-17",
+      "relacion": "definido_por"
+    },
+    {
+      "de": "MRC-TIPO",
+      "a": "TEC-GARET",
+      "relacion": "usa"
+    },
+    {
+      "de": "MRC-FOTO",
+      "a": "DEC-11",
+      "relacion": "definido_por"
+    },
+    {
+      "de": "MRC-FOTO",
+      "a": "DEC-23",
+      "relacion": "definido_por"
+    },
+    {
+      "de": "MRC-VOZ",
+      "a": "DEC-24",
+      "relacion": "definido_por"
+    },
+    {
+      "de": "MRC-LOGO",
+      "a": "DEC-28",
+      "relacion": "afinado_por"
+    },
+    {
+      "de": "MRC-LOGO",
+      "a": "TEC-CANVA",
+      "relacion": "origen"
+    },
+    {
+      "de": "MRC-PERS",
+      "a": "NEG-05",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "MRC-PERS",
+      "a": "OBJ-01",
+      "relacion": "cumple"
+    },
+    {
+      "de": "MRC-VOZ",
+      "a": "PEND-16",
+      "relacion": "afinado_por"
+    },
+    {
+      "de": "MRC-FOTO",
+      "a": "PEND-14",
+      "relacion": "bloqueado_por"
+    },
+    {
+      "de": "DEC-01",
+      "a": "MOD-SITIO",
+      "relacion": "aplica_a"
+    },
+    {
+      "de": "DEC-01",
+      "a": "RES-01",
+      "relacion": "motivada_por"
+    },
+    {
+      "de": "DEC-02",
+      "a": "TEC-WAME",
+      "relacion": "usa"
+    },
+    {
+      "de": "DEC-02",
+      "a": "OBJ-02",
+      "relacion": "cumple"
+    },
+    {
+      "de": "DEC-02",
+      "a": "NEG-06",
+      "relacion": "motivada_por"
+    },
+    {
+      "de": "DEC-02",
+      "a": "DEC-01",
+      "relacion": "depende_de"
+    },
+    {
+      "de": "DEC-03",
+      "a": "RES-05",
+      "relacion": "motivada_por"
+    },
+    {
+      "de": "DEC-03",
+      "a": "FDA-07",
+      "relacion": "excluye"
+    },
+    {
+      "de": "DEC-04",
+      "a": "RES-01",
+      "relacion": "motivada_por"
+    },
+    {
+      "de": "DEC-04",
+      "a": "MOD-RESERVAS",
+      "relacion": "aplica_a"
+    },
+    {
+      "de": "DEC-05",
+      "a": "OBJ-04",
+      "relacion": "cumple"
+    },
+    {
+      "de": "DEC-05",
+      "a": "MOD-RESERVAS",
+      "relacion": "aplica_a"
+    },
+    {
+      "de": "DEC-05",
+      "a": "NEG-10",
+      "relacion": "motivada_por"
+    },
+    {
+      "de": "DEC-05",
+      "a": "FDA-01",
+      "relacion": "excluye"
+    },
+    {
+      "de": "DEC-05",
+      "a": "FDA-02",
+      "relacion": "excluye"
+    },
+    {
+      "de": "DEC-05",
+      "a": "FDA-03",
+      "relacion": "excluye"
+    },
+    {
+      "de": "DEC-06",
+      "a": "RES-03",
+      "relacion": "motivada_por"
+    },
+    {
+      "de": "DEC-06",
+      "a": "FDA-08",
+      "relacion": "excluye"
+    },
+    {
+      "de": "DEC-07",
+      "a": "TEC-NEXT",
+      "relacion": "usa"
+    },
+    {
+      "de": "DEC-07",
+      "a": "TEC-VERCEL",
+      "relacion": "usa"
+    },
+    {
+      "de": "DEC-07",
+      "a": "TEC-SUPABASE",
+      "relacion": "usa"
+    },
+    {
+      "de": "DEC-07",
+      "a": "TEC-GOAUTH",
+      "relacion": "usa"
+    },
+    {
+      "de": "DEC-07",
+      "a": "TEC-MP",
+      "relacion": "usa"
+    },
+    {
+      "de": "TEC-NEST",
+      "a": "DEC-07",
+      "relacion": "descartada_en"
+    },
+    {
+      "de": "DEC-08",
+      "a": "MOD-DATOS",
+      "relacion": "aplica_a"
+    },
+    {
+      "de": "DEC-08",
+      "a": "RES-02",
+      "relacion": "motivada_por"
+    },
+    {
+      "de": "DEC-09",
+      "a": "POL-08",
+      "relacion": "motivada_por"
+    },
+    {
+      "de": "DEC-09",
+      "a": "MOD-DATOS",
+      "relacion": "aplica_a"
+    },
+    {
+      "de": "DEC-10",
+      "a": "RES-02",
+      "relacion": "motivada_por"
+    },
+    {
+      "de": "DEC-11",
+      "a": "MOD-SITIO",
+      "relacion": "aplica_a"
+    },
+    {
+      "de": "DEC-12",
+      "a": "TEC-DRIVE",
+      "relacion": "usa"
+    },
+    {
+      "de": "DEC-12",
+      "a": "RES-04",
+      "relacion": "motivada_por"
+    },
+    {
+      "de": "DEC-13",
+      "a": "TEC-CANVA",
+      "relacion": "usa"
+    },
+    {
+      "de": "DEC-14",
+      "a": "OBJ-05",
+      "relacion": "cumple"
+    },
+    {
+      "de": "DEC-17",
+      "a": "PEND-07",
+      "relacion": "afinada_por"
+    },
+    {
+      "de": "DEC-17",
+      "a": "TEC-GARET",
+      "relacion": "usa"
+    },
+    {
+      "de": "DEC-18",
+      "a": "PEND-13",
+      "relacion": "afinada_por"
+    },
+    {
+      "de": "DEC-19",
+      "a": "INV-13",
+      "relacion": "respeta"
+    },
+    {
+      "de": "DEC-19",
+      "a": "PEND-03",
+      "relacion": "afinada_por"
+    },
+    {
+      "de": "DEC-19",
+      "a": "TEC-DRIVE",
+      "relacion": "usa"
+    },
+    {
+      "de": "DEC-20",
+      "a": "TEC-GBP",
+      "relacion": "usa"
+    },
+    {
+      "de": "DEC-20",
+      "a": "OBJ-03",
+      "relacion": "cumple"
+    },
+    {
+      "de": "DEC-20",
+      "a": "MOD-GBP",
+      "relacion": "aplica_a"
+    },
+    {
+      "de": "DEC-20",
+      "a": "DEC-19",
+      "relacion": "depende_de"
+    },
+    {
+      "de": "DEC-20",
+      "a": "PEND-15",
+      "relacion": "afinada_por"
+    },
+    {
+      "de": "DEC-21",
+      "a": "DEC-20",
+      "relacion": "habilita"
+    },
+    {
+      "de": "DEC-21",
+      "a": "OBJ-05",
+      "relacion": "cumple"
+    },
+    {
+      "de": "DEC-21",
+      "a": "DEC-28",
+      "relacion": "depende_de"
+    },
+    {
+      "de": "DEC-22",
+      "a": "OBJ-01",
+      "relacion": "cumple"
+    },
+    {
+      "de": "DEC-22",
+      "a": "MOD-SITIO",
+      "relacion": "aplica_a"
+    },
+    {
+      "de": "DEC-23",
+      "a": "OBJ-01",
+      "relacion": "cumple"
+    },
+    {
+      "de": "DEC-23",
+      "a": "NEG-04",
+      "relacion": "motivada_por"
+    },
+    {
+      "de": "DEC-23",
+      "a": "PEND-14",
+      "relacion": "bloqueada_por"
+    },
+    {
+      "de": "DEC-24",
+      "a": "MOD-IDENTIDAD",
+      "relacion": "aplica_a"
+    },
+    {
+      "de": "DEC-25",
+      "a": "INC-03",
+      "relacion": "bloqueada_por"
+    },
+    {
+      "de": "DEC-25",
+      "a": "POL-01",
+      "relacion": "motivada_por"
+    },
+    {
+      "de": "DEC-25",
+      "a": "MOD-DATOS",
+      "relacion": "aplica_a"
+    },
+    {
+      "de": "DEC-26",
+      "a": "OBJ-01",
+      "relacion": "cumple"
+    },
+    {
+      "de": "DEC-26",
+      "a": "MOD-SITIO",
+      "relacion": "aplica_a"
+    },
+    {
+      "de": "DEC-26",
+      "a": "POL-02",
+      "relacion": "muestra"
+    },
+    {
+      "de": "DEC-26",
+      "a": "POL-03",
+      "relacion": "muestra"
+    },
+    {
+      "de": "DEC-26",
+      "a": "POL-04",
+      "relacion": "muestra"
+    },
+    {
+      "de": "DEC-26",
+      "a": "POL-05",
+      "relacion": "muestra"
+    },
+    {
+      "de": "DEC-26",
+      "a": "POL-06",
+      "relacion": "muestra"
+    },
+    {
+      "de": "DEC-27",
+      "a": "DEC-14",
+      "relacion": "afina"
+    },
+    {
+      "de": "DEC-28",
+      "a": "PEND-06",
+      "relacion": "afinada_por"
+    },
+    {
+      "de": "DEC-28",
+      "a": "DEC-13",
+      "relacion": "afina"
+    },
+    {
+      "de": "DEC-29",
+      "a": "RES-06",
+      "relacion": "motivada_por"
+    },
+    {
+      "de": "DEC-29",
+      "a": "MOD-HANDOFF",
+      "relacion": "aplica_a"
+    },
+    {
+      "de": "DEC-29",
+      "a": "TEC-CLAUDE",
+      "relacion": "usa"
+    },
+    {
+      "de": "DEC-30",
+      "a": "INC-05",
+      "relacion": "resuelve"
+    },
+    {
+      "de": "TEC-FIGMA",
+      "a": "PEND-08",
+      "relacion": "afinada_por"
+    },
+    {
+      "de": "MOD-PANEL",
+      "a": "TEC-GOAUTH",
+      "relacion": "usa"
+    },
+    {
+      "de": "MOD-RESERVAS",
+      "a": "TEC-SUPABASE",
+      "relacion": "usa"
+    },
+    {
+      "de": "MOD-SITIO",
+      "a": "TEC-NEXT",
+      "relacion": "usa"
+    },
+    {
+      "de": "INC-01",
+      "a": "UNI-01",
+      "relacion": "afecta"
+    },
+    {
+      "de": "INC-01",
+      "a": "UNI-02",
+      "relacion": "afecta"
+    },
+    {
+      "de": "INC-01",
+      "a": "UNI-03",
+      "relacion": "afecta"
+    },
+    {
+      "de": "INC-01",
+      "a": "UNI-04",
+      "relacion": "afecta"
+    },
+    {
+      "de": "INC-01",
+      "a": "PEND-04",
+      "relacion": "resuelta_por"
+    },
+    {
+      "de": "INC-02",
+      "a": "UNI-03",
+      "relacion": "afecta"
+    },
+    {
+      "de": "INC-02",
+      "a": "TAR-01",
+      "relacion": "afecta"
+    },
+    {
+      "de": "INC-02",
+      "a": "TAR-02",
+      "relacion": "afecta"
+    },
+    {
+      "de": "INC-02",
+      "a": "PEND-04",
+      "relacion": "resuelta_por"
+    },
+    {
+      "de": "INC-03",
+      "a": "TAR-01",
+      "relacion": "afecta"
+    },
+    {
+      "de": "INC-03",
+      "a": "TAR-02",
+      "relacion": "afecta"
+    },
+    {
+      "de": "INC-03",
+      "a": "DEC-25",
+      "relacion": "afecta"
+    },
+    {
+      "de": "INC-04",
+      "a": "POL-09",
+      "relacion": "afecta"
+    },
+    {
+      "de": "INC-05",
+      "a": "PRY-01",
+      "relacion": "afecta"
+    },
+    {
+      "de": "INC-06",
+      "a": "DST-02",
+      "relacion": "afecta"
+    },
+    {
+      "de": "INC-06",
+      "a": "PEND-01",
+      "relacion": "resuelta_por"
+    },
+    {
+      "de": "INC-07",
+      "a": "DST-01",
+      "relacion": "afecta"
+    },
+    {
+      "de": "INC-07",
+      "a": "POL-03",
+      "relacion": "afecta"
+    },
+    {
+      "de": "PEND-06",
+      "a": "FASE-1",
+      "relacion": "bloquea"
+    },
+    {
+      "de": "PEND-07",
+      "a": "FASE-1",
+      "relacion": "bloquea"
+    },
+    {
+      "de": "PEND-08",
+      "a": "FASE-1",
+      "relacion": "bloquea"
+    },
+    {
+      "de": "PEND-01",
+      "a": "FASE-2",
+      "relacion": "bloquea"
+    },
+    {
+      "de": "PEND-02",
+      "a": "FASE-2",
+      "relacion": "bloquea"
+    },
+    {
+      "de": "PEND-03",
+      "a": "FASE-2",
+      "relacion": "bloquea"
+    },
+    {
+      "de": "PEND-04",
+      "a": "FASE-2",
+      "relacion": "bloquea"
+    },
+    {
+      "de": "PEND-05",
+      "a": "FASE-2",
+      "relacion": "bloquea"
+    },
+    {
+      "de": "PEND-14",
+      "a": "FASE-2",
+      "relacion": "bloquea"
+    },
+    {
+      "de": "PEND-16",
+      "a": "FASE-2",
+      "relacion": "bloquea"
+    },
+    {
+      "de": "PEND-15",
+      "a": "FASE-3",
+      "relacion": "bloquea"
+    },
+    {
+      "de": "PEND-03",
+      "a": "FASE-3",
+      "relacion": "bloquea"
+    },
+    {
+      "de": "PEND-05",
+      "a": "NEG-12",
+      "relacion": "afina"
+    },
+    {
+      "de": "PEND-12",
+      "a": "NEG-15",
+      "relacion": "afina"
+    },
+    {
+      "de": "PEND-10",
+      "a": "MRC-FOTO",
+      "relacion": "afina"
+    },
+    {
+      "de": "PEND-09",
+      "a": "DEC-10",
+      "relacion": "afina"
+    },
+    {
+      "de": "PEND-17",
+      "a": "MOD-HANDOFF",
+      "relacion": "afina"
+    },
+    {
+      "de": "INV-01",
+      "a": "DEC-24",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "INV-02",
+      "a": "POL-01",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "INV-03",
+      "a": "DEC-06",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "INV-04",
+      "a": "NEG-12",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "INV-05",
+      "a": "DEC-08",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "INV-06",
+      "a": "NEG-01",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "INV-06",
+      "a": "DEC-20",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "INV-07",
+      "a": "DEC-14",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "INV-07",
+      "a": "DEC-27",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "INV-08",
+      "a": "DEC-12",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "INV-09",
+      "a": "DEC-05",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "INV-10",
+      "a": "DEC-29",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "INV-10",
+      "a": "DEC-30",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "INV-11",
+      "a": "DEC-29",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "INV-12",
+      "a": "MRC-PERS",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "INV-13",
+      "a": "DEC-19",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "INV-14",
+      "a": "DEC-30",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "INV-15",
+      "a": "DEC-03",
+      "relacion": "deriva_de"
+    },
+    {
+      "de": "FDA-04",
+      "a": "RES-02",
+      "relacion": "excluido_por"
+    },
+    {
+      "de": "FDA-06",
+      "a": "ACT-CLIENTE",
+      "relacion": "excluido_por"
+    }
+  ]
+}
